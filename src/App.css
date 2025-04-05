@@ -1,0 +1,40 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  width: 100%;
+}
+
+
+.task{
+  display: flex;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 12px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.task span {
+  margin-left: 12px;
+}
+
+.add-task {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.add-task input {
+  flex-grow: 1;
+  border-radius: 6px;
+  border:#eee;
+}
+
+.completed {
+  text-decoration: line-through;
+  color: gray;
+}
