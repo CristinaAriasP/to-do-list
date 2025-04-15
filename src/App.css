@@ -38,3 +38,15 @@
   text-decoration: line-through;
   color: gray;
 }
+
+.filters {
+  display: flex;
+  justify-content: start;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.filters__btn--selected {
+  background: #747bff;
+  color: white;
+}

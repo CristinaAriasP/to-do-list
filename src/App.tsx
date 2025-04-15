@@ -4,17 +4,19 @@ import './App.css';
 interface Task {
   text: string;
   isCompleted: boolean;
+  id: number;
 }
 
 function App() {
   const [taskText, setTaskText] = useState('');
+  const [isOnlyPending, setIsOnlyPending] = useState(false);
   const [tasks, setTasks] = useState<Task[]> ([
-    { text: 'Tarea 1', isCompleted: false},
-    { text: 'Tarea 2', isCompleted: true},
+    { text: 'Tarea 1', isCompleted: false, id: Math.random() },
+    { text: 'Tarea 2', isCompleted: true, id: Math.random() },
   ]);
 
   const handleAddTask = () => {
-    setTasks([...tasks, { text: taskText, isCompleted: false }]);
+    setTasks([...tasks, { text: taskText, isCompleted: false , id: Math.random()}]);
     setTaskText('');
   };
 
@@ -22,42 +24,73 @@ function App() {
     setTaskText(event.target.value);
   };
 
-  const handleToggleComplete = (index: number) => {
-    setTasks(
-      tasks.map((task, i) => {
-        if (i === index) {
-          return { ...task, isCompleted: !task.isCompleted };
-        } else {
+  const toggleComplete = (taskId: number) => {
+    const updatedTasks = tasks.map((task) => {
+        if (task.id === taskId) {
+          return { 
+            ...task, 
+            isCompleted: !task.isCompleted 
+          };
+        } 
           return task;
-        }
-      })
-    );
+      });
+    setTasks(updatedTasks);
+    console.log(tasks);
   };
 
-  const handleDeleteTask = (index: number) => {
-    const newTasks = [...tasks]; 
-    newTasks.splice(index, 1); 
-    setTasks(newTasks); 
-  };
+  const deleteTask = (taskId: number) => {
+    setTasks(currentTasks => {
+      return currentTasks.filter( task => {
+        return task.id != taskId;
+      })
+    }); 
+  }
+
+  const handleIsOnlyPendingClick = () => {
+    setIsOnlyPending(!isOnlyPending)
+  }
+
+  const filteredTasks = isOnlyPending 
+  ? tasks.filter((task) => {
+    return !task.isCompleted; 
+  })
+  : tasks;
+
+  // const handleShowUncompletedTasks = (tasks: Task[]) =>{
+  //   console.log(tasks);
+  //   const uncompletedTasks = tasks.map((task) => {
+  //     if (task.isCompleted === true) {
+  //       return task
+  //     };
+  //     setTasks(uncompletedTasks);
+  //   })
+  // }
+
+
 
   return (
     <>
       <h1> To do List</h1>
       <div className='add-task'>
         <input type="text" onInput={handleInput} value={taskText} />
-        <button onClick={handleAddTask}> Añadir tarea </button>
+        <button onClick={handleAddTask} disabled={!taskText.trim().length}> Añadir tarea </button> 
+        <div  className='filters'>
+         <button className={isOnlyPending ? `filters filters__btn--selected` : ``} onClick={() => handleIsOnlyPendingClick()}> 
+          Show only pending </button>
+        </div>
       </div>
       <div className = 'task-list'>
-        {tasks.map((task, index) => {
+        {filteredTasks.map((task) => {
           return (
-            <div className="task" key={index}>
+            <div className="task">
             <div>
-              <input type="checkbox" checked={task.isCompleted} onChange={() => handleToggleComplete(index)} />
+              <input type="checkbox" checked={task.isCompleted} 
+              onChange={() => toggleComplete(task.id)} />
               <span className={task.isCompleted ? 'completed' : ''}>
                 {task.text}
               </span>
             </div>
-            <button  onClick={() => handleDeleteTask(index)}> Eliminar </button>
+            <button  onClick={() => deleteTask(task.id)}> Eliminar </button>
           </div>
           );
         })}
